@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {v4 as uuidv4} from 'uuid';
-import './mysass.scss';
+import './ShoppingListStyle.scss';
 
 const initialItems = [
   { id: uuidv4(), name: 'Eggs' },
