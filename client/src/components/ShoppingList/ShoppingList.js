@@ -1,36 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import {v4 as uuidv4} from 'uuid';
+import { connect } from 'react-redux';
+import { getItems, deleteItem } from '../../actions/itemActions';
+import PropTypes from 'prop-types';
 import './ShoppingListStyle.scss';
 
-const initialItems = [
-  { id: uuidv4(), name: 'Eggs' },
-  { id: uuidv4(), name: 'Milk' },
-  { id: uuidv4(), name: 'Steak' },
-  { id: uuidv4(), name: 'Water' },
-];
+const ShoppingList = ({getItems, deleteItem, item}) => {
+  useEffect(() => {
+    getItems();
+  }, [getItems]);
 
-const addButtonStyle = {
-  marginBottom: '2rem'
-};
-
-const ShoppingList = () => {
-  const [items, setItems] = useState(initialItems);
+  const {items} = item;
 
   return (
     <Container>
-      <Button
-        color="dark"
-        style={addButtonStyle}
-        onClick={() => {
-          const name = prompt('상품명 입력');
-          name && setItems([...items, {id: uuidv4(), name}]);
-        }}
-      >
-        물품 추가
-      </Button>
-
       <ListGroup>
         <TransitionGroup className="shopping-list">
           {
@@ -41,9 +25,7 @@ const ShoppingList = () => {
                     className="remove-btn"
                     color="danger"
                     size="sm"
-                    onClick={() => {
-                      setItems(items.filter(item => item.id !== id));
-                    }}
+                    onClick={() => deleteItem(id)}
                   >&times;</Button>
                   { name }
                 </ListGroupItem>
@@ -56,4 +38,14 @@ const ShoppingList = () => {
   );
 };
 
-export default ShoppingList;
+ShoppingList.propTypes = {
+  getItems: PropTypes.func.isRequired,
+  deleteItem: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  item: state.item // state 에는 리듀서들이 들어있는데 거기서 item 리듀서를 선택한다는 뜻.
+});
+
+export default connect(mapStateToProps, { getItems, deleteItem })(ShoppingList);
