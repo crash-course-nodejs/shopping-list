@@ -1,18 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose'); // ORM with mongoDB, mongoDB Driver can use it.
-const bodyParser = require('body-parser'); // express 의 res, req 의 body를 처리하는 미들웨어
 const path = require('path');
-
-// api/items/*
-const items = require('./routes/api/items');
+const config = require('config');
 
 const app = express();
 
 // Bodyparser Middleware
-app.use(bodyParser.json());
+app.use(express.json());
 
 // DB Config
-const db = require('./config/keys').mongoURI;
+const db = config.get('mongoURI');
 
 // Connect to Mongo
 mongoose
@@ -20,8 +17,12 @@ mongoose
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
+mongoose.set('useCreateIndex', true);
+
 // Use Routes
-app.use('/api/items', items);
+app.use('/api/items', require('./routes/api/items'));
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
 
 // 프로덕션 모드일 때
 if (process.env.NODE_ENV === 'production') {
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const port = process.env.PORT || 5000; // Heroku 의 포트
+const port = process.env.PORT || 5000; ~// Heroku 의 포트
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
