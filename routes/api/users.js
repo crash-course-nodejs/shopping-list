@@ -15,6 +15,7 @@ router.post('/', (req, res) => {
 
   // 유효성 검사
   if (!name || !email || !password) {
+    console.log('도착한 값:', name, email, password);
     return res.status(400).json({ msg: '모든 항목을 입력해주세요.'});
   }
 

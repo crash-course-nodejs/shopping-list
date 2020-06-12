@@ -5,7 +5,8 @@ function auth(req, res, next) {
   const token = req.header('x-auth-token');
 
   // 토큰 검사
-  if (!token) res.status(401).json({ msg: '인증 토큰이 존재하지 않습니다.'});
+  if (!token) 
+    return res.status(401).json({ msg: '인증 토큰이 존재하지 않습니다.'});
 
   try {
     // 토큰 유효성 검사
